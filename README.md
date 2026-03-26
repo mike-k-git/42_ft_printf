@@ -10,6 +10,7 @@ _This project has been created as part of the 42 curriculum by mkugan._
 #### Source Code:
 The library is made of several `.c` files, including:
 - `ft_printf.c`: Main `printf` implementation.
+- `ft_dprintf.c`: Print to file descriptor.
 - `ft_itoa.c`: Integer to string conversion.
 - `parser.c`: Parsing format specifiers.
 - `utils.c`: Utility functions.
