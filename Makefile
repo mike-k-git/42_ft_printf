@@ -12,6 +12,7 @@ RESET  = \033[0m
 NAME = libftprintf.a
 
 SRC = ft_printf.c       \
+	  ft_dprintf.c      \
 	  parser.c          \
 	  utils.c           \
 	  process_percent.c \
@@ -70,6 +71,7 @@ clean:
 fclean: clean
 	@echo "$(YELLOW)Removing the $(NAME) library$(RESET)"
 	@rm -f $(NAME)
+	@echo "$(YELLOW)Removing dependencies$(RESET)"
 	@rm -f libft.a libft.h
 
 re: fclean all
