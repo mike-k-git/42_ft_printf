@@ -13,21 +13,21 @@
 #include "ft_printf.h"
 #include <unistd.h>
 
-ssize_t	print_padded_string(char *s, size_t len, size_t spaces, size_t start)
+ssize_t	print_padded_string(char *s, size_t len, t_format *f, size_t start)
 {
 	ssize_t	written;
 
 	if (start)
 	{
-		written = write(1, s, len);
-		written += ft_putnchar(" ", spaces);
+		written = write(f->fd, s, len);
+		written += ft_putnchar_fd(" ", f->pad_spaces, f->fd);
 	}
 	else
 	{
-		written = ft_putnchar(" ", spaces);
-		written += write(1, s, len);
+		written = ft_putnchar_fd(" ", f->pad_spaces, f->fd);
+		written += write(f->fd, s, len);
 	}
-	if (written == (ssize_t)(len + spaces))
+	if (written == (ssize_t)(len + f->pad_spaces))
 		return (written);
 	else
 		return (-1);
@@ -44,7 +44,6 @@ ssize_t	print_padded_string(char *s, size_t len, size_t spaces, size_t start)
  *	printf("[%.5s]\n", s);	[]
  *	printf("[%.6s]\n", s);	[(null)]
  */
-
 char	*handle_null_string(t_format *f)
 {
 	if (!f->has_precision)
@@ -65,15 +64,15 @@ ssize_t	process_string(t_format *f, char *s)
 	if (f->has_precision == 1 && f->precision < len)
 		len = f->precision;
 	if (len == 0 && f->has_precision)
-		return (ft_putnchar(" ", f->width));
+		return (ft_putnchar_fd(" ", f->width, f->fd));
 	if (len >= f->width)
-		return (write(1, s, len));
+		return (write(f->fd, s, len));
 	else
 	{
 		f->pad_spaces = f->width - len;
 		if (f->flag_minus == 1)
-			return (print_padded_string(s, len, f->pad_spaces, 1));
+			return (print_padded_string(s, len, f, 1));
 		else
-			return (print_padded_string(s, len, f->pad_spaces, 0));
+			return (print_padded_string(s, len, f, 0));
 	}
 }

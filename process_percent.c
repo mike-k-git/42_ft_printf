@@ -13,7 +13,7 @@
 #include "ft_printf.h"
 #include <unistd.h>
 
-ssize_t	process_percent(void)
+ssize_t	process_percent(t_format *f)
 {
-	return (write(1, "%", 1));
+	return (write(f->fd, "%", 1));
 }

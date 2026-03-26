@@ -14,21 +14,21 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-ssize_t	ft_putnchar(char *c, size_t n)
+ssize_t	ft_putnchar_fd(char *c, size_t n, int fd)
 {
 	size_t	i;
 
 	i = 0;
 	while (i < n)
 	{
-		if (write(1, c, 1) == -1)
+		if (write(fd, c, 1) == -1)
 			return (-1);
 		i++;
 	}
 	return (n);
 }
 
-t_format	*ft_t_format_init(void)
+t_format	*ft_t_format_init(int fd)
 {
 	t_format	*f;
 
@@ -46,6 +46,7 @@ t_format	*ft_t_format_init(void)
 	f->flag_hash = 0;
 	f->pad_zeroes = 0;
 	f->pad_spaces = 0;
+	f->fd = fd;
 	f->prefix = NULL;
 	return (f);
 }
@@ -97,4 +98,70 @@ size_t	ft_strlen(char *s)
 	while (s[len])
 		len++;
 	return (len);
+}
+
+ssize_t	convert_specifier(va_list *ap, t_format *f)
+{
+	ssize_t	written;
+
+	if (f->specifier == '%')
+		written = process_percent(f);
+	else if (f->specifier == 'c')
+		written = process_char(f, va_arg(*ap, int));
+	else if (f->specifier == 's')
+		written = process_string(f, va_arg(*ap, char *));
+	else if (f->specifier == 'd' || f->specifier == 'i')
+		written = process_int(f, va_arg(*ap, int));
+	else if (f->specifier == 'u')
+		written = process_uint(f, va_arg(*ap, unsigned int));
+	else if (f->specifier == 'p')
+		written = process_pointer(f, va_arg(*ap, void *));
+	else if (f->specifier == 'x' || f->specifier == 'X')
+		written = process_hex(f, va_arg(*ap, unsigned int));
+	else
+		written = -1;
+	free(f);
+	return (written);
+}
+
+static int	ft_size_n(long n)
+{
+	int	len;
+
+	len = 1;
+	if (n < 0)
+		len++;
+	while (n / 10)
+	{
+		n /= 10;
+		len++;
+	}
+	return (len);
+}
+
+char	*ft_itoa(long n)
+{
+	char	*num;
+	int		len;
+	int		is_negative;
+
+	is_negative = 0;
+	len = ft_size_n(n);
+	if (n < 0)
+		is_negative = 1;
+	num = (char *)malloc(sizeof(char) * (len + 1));
+	if (!num)
+		return (NULL);
+	num[len] = '\0';
+	while (len--)
+	{
+		if (n % 10 < 0)
+			num[len] = -(n % 10) + '0';
+		else
+			num[len] = (n % 10) + '0';
+		n /= 10;
+		if (len == 0 && is_negative)
+			num[len] = '-';
+	}
+	return (num);
 }

@@ -17,7 +17,7 @@
 ssize_t	handle_zero_with_zero_precision(t_format *f)
 {
 	if (f->width > 0)
-		return (ft_putnchar(" ", f->width));
+		return (ft_putnchar_fd(" ", f->width, f->fd));
 	return (0);
 }
 
@@ -38,10 +38,10 @@ ssize_t	print_hex_padded_left_aligned(t_format *f, char *digits, size_t len)
 	size_t	len_prefix;
 
 	len_prefix = ft_strlen(f->prefix);
-	written = write(1, f->prefix, len_prefix);
-	written += ft_putnchar("0", f->pad_zeroes);
-	written += write(1, digits, len);
-	written += ft_putnchar(" ", f->pad_spaces);
+	written = write(f->fd, f->prefix, len_prefix);
+	written += ft_putnchar_fd("0", f->pad_zeroes, f->fd);
+	written += write(f->fd, digits, len);
+	written += ft_putnchar_fd(" ", f->pad_spaces, f->fd);
 	free(digits);
 	if (written == (ssize_t)(f->pad_zeroes + len + f->pad_spaces + len_prefix))
 		return (written);
@@ -56,16 +56,16 @@ ssize_t	print_hex_padded_right_aligned(t_format *f, char *digits, size_t len)
 	len_prefix = ft_strlen(f->prefix);
 	if (f->flag_zero && !f->has_precision)
 	{
-		written = write(1, f->prefix, len_prefix);
-		written += ft_putnchar("0", f->pad_spaces);
+		written = write(f->fd, f->prefix, len_prefix);
+		written += ft_putnchar_fd("0", f->pad_spaces, f->fd);
 	}
 	else
 	{
-		written = ft_putnchar(" ", f->pad_spaces);
-		written += write(1, f->prefix, len_prefix);
+		written = ft_putnchar_fd(" ", f->pad_spaces, f->fd);
+		written += write(f->fd, f->prefix, len_prefix);
 	}
-	written += ft_putnchar("0", f->pad_zeroes);
-	written += write(1, digits, len);
+	written += ft_putnchar_fd("0", f->pad_zeroes, f->fd);
+	written += write(f->fd, digits, len);
 	free(digits);
 	if (written == (ssize_t)(f->pad_zeroes + len + f->pad_spaces + len_prefix))
 		return (written);

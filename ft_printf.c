@@ -19,7 +19,7 @@ ssize_t	convert_specifier(va_list *ap, t_format *f)
 	ssize_t	written;
 
 	if (f->specifier == '%')
-		written = process_percent();
+		written = process_percent(f);
 	else if (f->specifier == 'c')
 		written = process_char(f, va_arg(*ap, int));
 	else if (f->specifier == 's')
@@ -53,7 +53,7 @@ int	ft_printf(const char *fmt, ...)
 		if (*fmt == '%')
 		{
 			fmt++;
-			f = ft_t_format_init();
+			f = ft_t_format_init(1);
 			if (!f || parse_format_specifier(&fmt, f) == -1)
 				return (-1);
 			result += convert_specifier(&ap, f);

@@ -29,13 +29,16 @@ typedef struct s_format
 	size_t	flag_hash;
 	size_t	pad_zeroes;
 	size_t	pad_spaces;
+	int		fd;
 	char	*prefix;
 }	t_format;
 
 int			ft_printf(const char *fmt, ...);
-ssize_t		ft_putnchar(char *c, size_t n);
-t_format	*ft_t_format_init(void);
+int			ft_dprintf(int fd, const char *fmt, ...);
+ssize_t		ft_putnchar_fd(char *c, size_t n, int fd);
+t_format	*ft_t_format_init(int fd);
 char		*ft_strdup(char *s);
+char		*ft_itoa(long n);
 size_t		ft_atoi_advance(const char **fmt);
 int			ft_isflag(char c);
 int			ft_isformat_specifier(char c);
@@ -47,11 +50,12 @@ char		*ft_itoa_long(long n);
 char		*ft_utoa_base(unsigned long n, char *base);
 void		set_prefix(t_format *f, long arg);
 ssize_t		process_hex(t_format *f, unsigned int arg);
-ssize_t		process_percent(void);
+ssize_t		process_percent(t_format *f);
 ssize_t		process_string(t_format *f, char *s);
 ssize_t		process_char(t_format *f, int c);
 ssize_t		process_int(t_format *f, int arg);
 ssize_t		process_pointer(t_format *f, void *arg);
 ssize_t		process_uint(t_format *f, unsigned int arg);
+ssize_t		convert_specifier(va_list *ap, t_format *f);
 
 #endif 
