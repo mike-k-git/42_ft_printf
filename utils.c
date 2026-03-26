@@ -12,21 +12,6 @@
 
 #include "ft_printf.h"
 #include <stdlib.h>
-#include <unistd.h>
-
-ssize_t	ft_putnchar_fd(char *c, size_t n, int fd)
-{
-	size_t	i;
-
-	i = 0;
-	while (i < n)
-	{
-		if (write(fd, c, 1) == -1)
-			return (-1);
-		i++;
-	}
-	return (n);
-}
 
 t_format	*ft_t_format_init(int fd)
 {
@@ -70,36 +55,6 @@ void	set_prefix(t_format *f, long arg)
 		f->prefix = "-";
 }
 
-char	*ft_strdup(char *s)
-{
-	char	*new;
-	size_t	s_len;
-	size_t	i;
-
-	s_len = ft_strlen(s);
-	new = (char *)malloc(sizeof(char) * s_len + 1);
-	if (!new)
-		return (NULL);
-	i = 0;
-	while (i < s_len)
-	{
-		new[i] = s[i];
-		i++;
-	}
-	new[i] = '\0';
-	return (new);
-}
-
-size_t	ft_strlen(char *s)
-{
-	size_t	len;
-
-	len = 0;
-	while (s[len])
-		len++;
-	return (len);
-}
-
 ssize_t	convert_specifier(va_list *ap, t_format *f)
 {
 	ssize_t	written;
@@ -122,46 +77,4 @@ ssize_t	convert_specifier(va_list *ap, t_format *f)
 		written = -1;
 	free(f);
 	return (written);
-}
-
-static int	ft_size_n(long n)
-{
-	int	len;
-
-	len = 1;
-	if (n < 0)
-		len++;
-	while (n / 10)
-	{
-		n /= 10;
-		len++;
-	}
-	return (len);
-}
-
-char	*ft_itoa(long n)
-{
-	char	*num;
-	int		len;
-	int		is_negative;
-
-	is_negative = 0;
-	len = ft_size_n(n);
-	if (n < 0)
-		is_negative = 1;
-	num = (char *)malloc(sizeof(char) * (len + 1));
-	if (!num)
-		return (NULL);
-	num[len] = '\0';
-	while (len--)
-	{
-		if (n % 10 < 0)
-			num[len] = -(n % 10) + '0';
-		else
-			num[len] = (n % 10) + '0';
-		n /= 10;
-		if (len == 0 && is_negative)
-			num[len] = '-';
-	}
-	return (num);
 }

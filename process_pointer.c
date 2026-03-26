@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+#include "libft.h"
 #include <unistd.h>
 #include <stdlib.h>
 
@@ -89,7 +90,7 @@ ssize_t	process_pointer(t_format *f, void *arg)
 
 	if (arg == NULL)
 		return (handle_null_pointer(f));
-	ptr = ft_utoa_base((unsigned long)arg, "0123456789abcdef");
+	ptr = ft_ultoa_base((unsigned long)arg, "0123456789abcdef");
 	len = ft_strlen(ptr);
 	if (f->width > len + 2)
 	{

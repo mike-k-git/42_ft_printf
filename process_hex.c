@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+#include "libft.h"
 #include <unistd.h>
 #include <stdlib.h>
 
@@ -26,9 +27,9 @@ char	*set_digits(t_format *f, unsigned int arg)
 	char	*digits;
 
 	if (f->specifier == 'x')
-		digits = ft_utoa_base((unsigned long)arg, "0123456789abcdef");
+		digits = ft_ultoa_base((unsigned long)arg, "0123456789abcdef");
 	else
-		digits = ft_utoa_base((unsigned long)arg, "0123456789ABCDEF");
+		digits = ft_ultoa_base((unsigned long)arg, "0123456789ABCDEF");
 	return (digits);
 }
 
