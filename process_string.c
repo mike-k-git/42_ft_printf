@@ -14,24 +14,20 @@
 #include "libft.h"
 #include <unistd.h>
 
-ssize_t	print_padded_string(char *s, size_t len, t_format *f, size_t start)
-{
-	ssize_t	written;
+ssize_t print_padded_string(char *s, size_t len, t_format *f, size_t start) {
+  ssize_t written;
 
-	if (start)
-	{
-		written = write(f->fd, s, len);
-		written += ft_putnchar_fd(" ", f->pad_spaces, f->fd);
-	}
-	else
-	{
-		written = ft_putnchar_fd(" ", f->pad_spaces, f->fd);
-		written += write(f->fd, s, len);
-	}
-	if (written == (ssize_t)(len + f->pad_spaces))
-		return (written);
-	else
-		return (-1);
+  if (start) {
+    written = write(f->fd, s, len);
+    written += ft_putnchar_fd(' ', f->pad_spaces, f->fd);
+  } else {
+    written = ft_putnchar_fd(' ', f->pad_spaces, f->fd);
+    written += write(f->fd, s, len);
+  }
+  if (written == (ssize_t)(len + f->pad_spaces))
+    return (written);
+  else
+    return (-1);
 }
 
 /*
@@ -45,35 +41,32 @@ ssize_t	print_padded_string(char *s, size_t len, t_format *f, size_t start)
  *	printf("[%.5s]\n", s);	[]
  *	printf("[%.6s]\n", s);	[(null)]
  */
-char	*handle_null_string(t_format *f)
-{
-	if (!f->has_precision)
-		return ("(null)");
-	else if (f->precision > 5)
-		return ("(null)");
-	else
-		return ("");
+char *handle_null_string(t_format *f) {
+  if (!f->has_precision)
+    return ("(null)");
+  else if (f->precision > 5)
+    return ("(null)");
+  else
+    return ("");
 }
 
-ssize_t	process_string(t_format *f, char *s)
-{
-	size_t	len;
+ssize_t process_string(t_format *f, char *s) {
+  size_t len;
 
-	if (!s)
-		s = handle_null_string(f);
-	len = ft_strlen(s);
-	if (f->has_precision == 1 && f->precision < len)
-		len = f->precision;
-	if (len == 0 && f->has_precision)
-		return (ft_putnchar_fd(" ", f->width, f->fd));
-	if (len >= f->width)
-		return (write(f->fd, s, len));
-	else
-	{
-		f->pad_spaces = f->width - len;
-		if (f->flag_minus == 1)
-			return (print_padded_string(s, len, f, 1));
-		else
-			return (print_padded_string(s, len, f, 0));
-	}
+  if (!s)
+    s = handle_null_string(f);
+  len = ft_strlen(s);
+  if (f->has_precision == 1 && f->precision < len)
+    len = f->precision;
+  if (len == 0 && f->has_precision)
+    return (ft_putnchar_fd(' ', f->width, f->fd));
+  if (len >= f->width)
+    return (write(f->fd, s, len));
+  else {
+    f->pad_spaces = f->width - len;
+    if (f->flag_minus == 1)
+      return (print_padded_string(s, len, f, 1));
+    else
+      return (print_padded_string(s, len, f, 0));
+  }
 }
